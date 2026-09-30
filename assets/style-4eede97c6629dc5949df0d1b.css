@@ -442,6 +442,10 @@ dialog::backdrop {
   .author {
     font-size: 11px;
   }
+  .author {
+    margin-top: 0;
+    line-height: 1.35;
+  }
   .modal-inner {
     padding: 28px 22px;
   }
@@ -549,6 +553,22 @@ dialog::backdrop {
   }
 }
 @media (max-width: 700px) {
+  .filter-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+  }
+  .period-buttons {
+    flex-wrap: wrap;
+  }
+  .category-picker,
+  .filter-bar .search-controls {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+}
+@media (max-width: 700px) {
   .list-heading {
     gap: 12px;
   }
@@ -562,6 +582,11 @@ dialog::backdrop {
   }
   .about {
     min-height: 40px;
+  }
+}
+@media (max-width: 700px) and (pointer: coarse) {
+  .book-title {
+    min-height: 24px;
   }
 }
 
@@ -832,6 +857,7 @@ td.category-column > span {
 .coverage-note summary {
   cursor: pointer;
   width: fit-content;
+  margin-left: auto;
 }
 .coverage-note summary:focus-visible {
   outline: 2px solid var(--accent);
@@ -839,6 +865,7 @@ td.category-column > span {
 }
 .coverage-note p {
   margin-top: 5px;
+  text-align: right;
 }
 .list-heading h2 small {
   display: block;

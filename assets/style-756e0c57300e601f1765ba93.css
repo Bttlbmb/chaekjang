@@ -922,13 +922,16 @@ td.category-column > span {
 .report-intro h1 { font-size: 30px; font-weight: 500; letter-spacing: -.8px; margin: 7px 0 14px; }
 .report-context { display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .report-context time { white-space: nowrap; }
-.report-coverage { margin-top: 10px; color: var(--muted); font-size: 12px; line-height: 1.7; }
-.report-store-coverage { display: flex; flex-wrap: wrap; gap: 4px 18px; }
-.report-store-coverage span { white-space: nowrap; }
-.report-leaders { padding: 0 0 18px; }
-.report-leaders h2 { color: var(--muted); font-size: 12px; font-weight: 400; margin-bottom: 7px; }
-.report-leader + .report-leader { margin-top: 10px; }
 .report-sort { flex-basis: 170px; width: 170px; max-width: 170px; }
+.report-archive-year { border-top: 1px solid var(--line); padding: 18px 0; }
+.report-archive-year h2 { font-size: 17px; font-weight: 500; letter-spacing: -.35px; margin-bottom: 8px; }
+.report-months { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 4px 24px; list-style: none; padding: 0; }
+.report-months a { display: flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 500; text-decoration: none; text-underline-offset: 3px; }
+.report-months a:hover, .report-months a:focus-visible { color: var(--accent); text-decoration: underline; }
+.report-archive .site-footer { border-top: 1px solid var(--line); }
+.site-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; }
+.site-footer a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 3px; }
+.site-footer a:hover, .site-footer a:focus-visible { color: var(--accent); }
 @media (max-width: 850px) {
   .report-filters { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
   .report-filters .category-picker { width: 100%; min-width: 0; max-width: none; }
@@ -936,8 +939,12 @@ td.category-column > span {
 }
 @media (max-width: 560px) {
   .report-intro h1 { font-size: 27px; }
+  .report-months { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .report-page .list-heading { flex-wrap: wrap; gap: 4px 16px; }
   .report-page .list-heading .range-label { text-align: left; margin-left: 0; }
+}
+@media (max-width: 360px) {
+  .report-months { grid-template-columns: minmax(0,1fr); }
 }
 
 /* Saved-credit navigation and the compact, unnumbered bibliography. */

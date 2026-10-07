@@ -606,6 +606,39 @@ dialog::backdrop {
   gap: 18px;
   text-align: right;
 }
+.language-switch {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--row-alternate);
+  text-decoration: none;
+}
+.language-switch > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 24px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.language-switch > span.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.language-switch:focus-visible { outline-offset: 2px; }
+:root[lang="ko"] main, :root[lang="ko"] dialog {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
 .collection-date {
   font-size: 11px;
   color: var(--muted);
@@ -771,16 +804,19 @@ dialog::backdrop {
 }
 @media (max-width: 700px) {
   header {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 6px;
   }
-  .header-meta {
-    max-width: none;
-    flex: 1 0 100%;
-    justify-content: space-between;
-    gap: 12px;
-    text-align: left;
-  }
+  .brand { grid-row: 1; grid-column: 1; }
+  .header-meta { display: contents; }
+  .language-switch { grid-row: 1; grid-column: 2; }
+  .collection-date { grid-row: 2; grid-column: 1; text-align: left; }
   .header-meta .about {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: end;
     padding: 0;
   }
 }
@@ -1096,7 +1132,7 @@ td.points > strong { display: block; }
 .notice button { color: var(--accent); text-decoration: underline; flex: 0 0 auto; }
 .history-hint { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 8px 0 12px; }
 
-/* Group a short title/byline with its trigger; editions start below both. */
+/* Rows without a byline keep their trigger beside the complete heading. */
 @supports (grid-template-columns: subgrid) and selector(details::details-content) {
   @media (min-width: 430px) and (max-width: 560px) {
     .book-row:has(> .work-versions) { display: grid; grid-template-columns: minmax(24px, 1fr) max-content; column-gap: 8px; width: fit-content; max-width: 100%; }
@@ -1116,6 +1152,32 @@ td.points > strong { display: block; }
     .book-row > .work-versions > summary { grid-area: 1 / 2; align-self: end; display: flex; align-items: flex-end; margin: 0; }
     .book-row > .work-versions::details-content { grid-area: 2 / 1 / 3 / 3; min-width: 0; }
   }
+}
+/* List/report disclosures follow the author, independently of title width. */
+.book-row .book-meta > .author:empty { display: none; }
+.book-row .book-meta > .work-versions { flex-basis: 100%; margin: 4px 0 0; }
+.book-row .book-meta > .work-versions > summary { display: inline-flex; align-items: baseline; line-height: 1.4; }
+.book-row .book-meta > .work-versions > summary::after { content: "+"; margin-inline-start: 4px; width: 1ch; text-align: center; }
+.book-row .book-meta > .work-versions[open] > summary::after { content: "−"; }
+@supports selector(details::details-content) {
+  @media (min-width: 430px) {
+    .book-row .book-meta { align-items: baseline; row-gap: 0; column-gap: 14px; }
+    .book-row .book-meta > .work-versions { display: contents; }
+    .book-row .book-meta > .work-versions > summary { flex: 0 0 auto; white-space: nowrap; }
+    .book-row .book-meta > .work-versions[open]::details-content { display: contents; }
+    /* Flattening the open wrapper must never expose closed edition links. */
+    .book-row .book-meta > .work-versions:not([open])::details-content { display: none; }
+    .book-row .book-meta > .work-versions > .version-content { flex: 0 0 100%; }
+  }
+}
+@media (max-width: 429px) {
+  .book-row .book-meta { display: block; }
+}
+@media (max-width: 700px), (pointer: coarse) {
+  .book-row .book-meta > .work-versions > summary { line-height: 24px; }
+}
+@media (max-width: 560px) {
+  .book-row .book-meta > .work-versions > summary { min-height: 44px; }
 }
 @media (max-width: 560px) {
   .book-row > .work-versions > summary { min-height: 44px; line-height: 24px; }

@@ -14,8 +14,26 @@
   --page-max-width: 1240px;
   --page-gutter: 36px;
   --category-control-width: 150px;
-  --report-sort-width: 170px;
 }
+.list-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding-top: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.list-navigation a {
+  padding: 7px 0;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.list-navigation a.active {
+  color: inherit;
+  border-bottom-color: var(--accent);
+}
+.list-navigation a:hover { color: var(--accent); }
 * {
   box-sizing: border-box;
 }
@@ -218,6 +236,35 @@ th {
   padding: 10px 14px;
   border-bottom: 1px solid var(--line);
 }
+th:has(.table-sort) { padding-block: 0; }
+.table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 35px;
+  padding: 8px 0;
+  text-align: inherit;
+  font: inherit;
+  color: inherit;
+}
+.table-sort:disabled { opacity: 1; }
+.table-sort:not(:disabled):hover { color: var(--accent); }
+.table-sort:focus-visible { outline-offset: -2px; }
+th.points .table-sort, th.position .table-sort { justify-content: flex-end; }
+th[aria-sort="ascending"] .table-sort::after,
+th[aria-sort="descending"] .table-sort::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 0;
+  height: 0;
+  border-inline: 3px solid transparent;
+}
+th[aria-sort="ascending"] .table-sort::after { border-bottom: 5px solid currentColor; }
+th[aria-sort="descending"] .table-sort::after { border-top: 5px solid currentColor; }
+th[aria-sort="ascending"], th[aria-sort="descending"] { color: #272925; }
+.table-status td { padding: 0; }
+.table-status:hover { background: transparent; }
 td {
   padding: 13px 14px;
   border-bottom: 1px solid #e2ddd2;
@@ -639,15 +686,10 @@ dialog::backdrop {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
-.collection-date {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.5;
-  font-variant-numeric: tabular-nums;
-}
-.collection-date time {
-  white-space: nowrap;
-}
+.data-provenance { margin: 20px 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.data-provenance summary { cursor: pointer; }
+.data-provenance .dataset-provenance-content { margin-top: 8px; }
+.help-provenance h3 { font-size: 14px; font-weight: 500; margin: 0 0 8px; }
 .header-meta .about {
   white-space: nowrap;
   font-size: 11px;
@@ -812,7 +854,6 @@ dialog::backdrop {
   .brand { grid-row: 1; grid-column: 1; }
   .header-meta { display: contents; }
   .language-switch { grid-row: 1; grid-column: 2; }
-  .collection-date { grid-row: 2; grid-column: 1; text-align: left; }
   .header-meta .about {
     grid-row: 2;
     grid-column: 2;
@@ -908,7 +949,6 @@ td.category-column > span {
 .report-intro h1 { font-size: 30px; font-weight: 500; letter-spacing: -.8px; margin: 7px 0 14px; }
 .report-context { display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .report-context time { white-space: nowrap; }
-.report-sort { flex-basis: var(--report-sort-width); width: var(--report-sort-width); max-width: var(--report-sort-width); }
 .report-archive-year { border-top: 1px solid var(--line); padding: 18px 0; }
 .report-archive-year h2 { font-size: 17px; font-weight: 500; letter-spacing: -.35px; margin-bottom: 8px; }
 .report-months { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 4px 24px; list-style: none; padding: 0; }
@@ -919,9 +959,7 @@ td.category-column > span {
 .site-footer a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 3px; }
 .site-footer a:hover, .site-footer a:focus-visible { color: var(--accent); }
 @media (max-width: 850px) {
-  .report-filters { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
-  .report-filters .category-picker { width: 100%; min-width: 0; max-width: none; }
-  .report-filters .search-controls { grid-column: 1 / -1; }
+  .report-filters { grid-template-columns: var(--category-control-width) minmax(0,1fr); }
 }
 @media (max-width: 560px) {
   .report-filters { grid-template-columns: minmax(0,1fr); }
@@ -1089,6 +1127,8 @@ td.points > strong { display: block; }
   .author-page .list-panel { --title-inset: 6px; --points-inset: 6px; }
 }
 @media (max-width: 700px), (pointer: coarse) {
+  .table-sort { min-height: 44px; }
+  .data-provenance summary { min-height: 44px; padding-block: 12px; }
   .empty button { min-height: 44px; padding-inline: 8px; }
   .search { min-height: 44px; padding-block: 0; padding-right: 0; }
   .search button { flex: 0 0 44px; height: 44px; align-items: center; justify-content: center; }
@@ -1112,7 +1152,7 @@ td.points > strong { display: block; }
   .points { width: 58px; }
 }
 @media (pointer: coarse) {
-  :root { --category-control-width: 220px; --report-sort-width: 200px; }
+  :root { --category-control-width: 220px; }
   .author-periods { --author-control-height: 44px; }
   .header-meta .about, .coverage-note summary, .work-versions summary, .author-period-context .coverage-note summary { min-height: 44px; }
   .header-meta .about, .coverage-note summary, .work-versions summary { display: flex; align-items: center; }
@@ -1169,15 +1209,23 @@ td.points > strong { display: block; }
     .book-row .book-meta > .work-versions:not([open])::details-content { display: none; }
     .book-row .book-meta > .work-versions > .version-content { flex: 0 0 100%; }
   }
+  @media (min-width: 430px) and (max-width: 700px), (min-width: 430px) and (pointer: coarse) {
+    .book-row .book-meta { row-gap: 2px; }
+  }
 }
 @media (max-width: 429px) {
   .book-row .book-meta { display: block; }
 }
 @media (max-width: 700px), (pointer: coarse) {
+  .book-row .book-meta > .work-versions { margin-top: 2px; }
   .book-row .book-meta > .work-versions > summary { line-height: 24px; }
 }
 @media (max-width: 560px) {
   .book-row .book-meta > .work-versions > summary { min-height: 44px; }
+}
+@media (max-width: 560px), (pointer: coarse) {
+  /* The closed 44px target uses 10px of the cell's existing bottom padding. */
+  .book-row .book-meta > .work-versions:not([open]) > summary { margin-bottom: -10px; }
 }
 @media (max-width: 560px) {
   .book-row > .work-versions > summary { min-height: 44px; line-height: 24px; }
@@ -1189,7 +1237,35 @@ td.points > strong { display: block; }
   .paging-status .notice { min-height: 65px; }
 }
 @media (pointer: coarse) {
-  .book-row > .work-versions > summary { line-height: 24px; }
+.book-row > .work-versions > summary { line-height: 24px; }
+}
+
+/* Recent publications reuse the list's type and spacing without a rank column. */
+.releases-page .list-heading h1 {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.35px;
+  margin: 4px 0;
+}
+.releases-page .list-panel { --title-inset: 14px; }
+.releases-page .points { width: 108px; }
+.releases-page .sort-label { min-width: 0; }
+.release-byline time { white-space: nowrap; }
+.release-date { white-space: nowrap; }
+.release-date.after-credits::before { content: " · "; }
+.release-edition-date { display: block; font-size: 12px; line-height: 1.5; margin-top: 4px; }
+@media (max-width: 700px) {
+  .releases-page .list-panel { --title-inset: 6px; }
+  .releases-page .points { width: 64px; }
+  .releases-page .list-heading { flex-wrap: wrap; gap: 4px 16px; }
+  .list-navigation a { min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (pointer: coarse) {
+  .list-navigation a { min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (max-width: 429px) {
+  .release-date { display: block; }
+  .release-date.after-credits::before { content: none; }
 }
 /* Keep all five targets and useful results in a short phone's first viewport. */
 @media (max-width: 360px) {

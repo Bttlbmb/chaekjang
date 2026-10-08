@@ -11,7 +11,7 @@
   --accent: #963f34;
   --accent-text: #f8f4eb;
   --row-alternate: #eee9df;
-  --page-max-width: 1240px;
+  --page-max-width: 1040px;
   --page-gutter: 36px;
   --category-control-width: 150px;
 }
@@ -146,7 +146,6 @@ h1 {
   border-top: 1px solid #272925;
   border-bottom: 1px solid var(--line);
   border-radius: 0;
-  overflow: hidden;
 }
 .list-heading {
   padding: 17px 0;
@@ -267,11 +266,7 @@ th[aria-sort="ascending"], th[aria-sort="descending"] { color: #272925; }
 .table-status:hover { background: transparent; }
 td {
   padding: 13px 14px;
-  border-bottom: 1px solid #e2ddd2;
   vertical-align: top;
-}
-tbody tr:last-child td {
-  border: 0;
 }
 tbody tr:nth-child(even) {
   background: var(--row-alternate);
@@ -352,19 +347,23 @@ td.position {
   color: #363a33;
 }
 .empty {
-  padding: 60px 24px;
-  text-align: center;
+  padding: 28px 0 32px;
+  text-align: left;
   color: var(--muted);
   font-size: 13px;
 }
 .empty h3 {
-  font-size: 18px;
-  margin-bottom: 12px;
+  font-size: 17px;
+  margin: 0 0 6px;
 }
 .empty button {
-  margin-top: 20px;
+  margin-top: 10px;
   text-decoration: underline;
   color: var(--accent);
+}
+/* An empty result has nothing to sort; loading keeps the headers in place. */
+table:has(> tbody div.empty) thead {
+  display: none;
 }
 .empty button + button {
   margin-left: 12px;
@@ -420,7 +419,7 @@ dialog::backdrop {
   font-size: 13px;
   line-height: 1.8;
   margin-bottom: 15px;
-  color: #697064;
+  color: var(--muted);
 }
 .source-links {
   list-style: none;
@@ -433,6 +432,7 @@ dialog::backdrop {
 }
 .source-links small {
   display: block;
+  font-size: inherit;
   color: var(--muted);
   margin-top: 5px;
 }
@@ -503,7 +503,9 @@ dialog::backdrop {
 .period-picker {
   padding: 0;
 }
+/* The first period's text meets the page edge; its padding stays as target area. */
 .period-buttons {
+  margin-left: -7px;
   display: flex;
   gap: 4px;
   flex-wrap: nowrap;
@@ -516,7 +518,7 @@ dialog::backdrop {
   border-bottom: 2px solid transparent;
   font-size: 12px;
   background: transparent;
-  color: #65635c;
+  color: var(--muted);
   text-decoration: none;
 }
 .period-buttons button.active,
@@ -533,7 +535,7 @@ dialog::backdrop {
 }
 .list-heading .range-label {
   font-size: 12px;
-  color: #686351;
+  color: var(--muted);
   margin: 0 0 0 auto;
   text-align: right;
 }
@@ -572,8 +574,7 @@ dialog::backdrop {
   gap: 14px;
   align-items: center;
   flex-wrap: wrap;
-  padding: 12px 0 17px;
-  border-top: 1px solid var(--line);
+  padding: 2px 0 14px;
 }
 .filter-bar .period-picker {
   flex: 0 0 auto;
@@ -625,7 +626,7 @@ dialog::backdrop {
 }
 @media (max-width: 560px) {
   .filter-bar { grid-template-columns: minmax(0, 1fr); }
-  .period-buttons { flex-wrap: wrap; gap: 0; }
+  .period-buttons { flex-wrap: wrap; gap: 0; margin-left: -6px; }
   .period-buttons button, .period-buttons a { padding-inline: 6px; }
 }
 @media (max-width: 700px) {
@@ -694,6 +695,9 @@ dialog::backdrop {
   white-space: nowrap;
   font-size: 11px;
   gap: 5px;
+}
+@media (min-width: 701px) {
+  .header-meta .about { margin-right: -6px; }
 }
 .about-label {
   text-decoration: underline;
@@ -801,14 +805,22 @@ dialog::backdrop {
   border-bottom: 1px solid var(--line);
 }
 .book-heading h1 {
-  font-size: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 14px;
+  row-gap: 2px;
+  font-size: 30px;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
+.book-heading h1 > span, .book-heading h1 > small {
+  min-width: 0;
+  max-width: 100%;
+}
 .book-heading h1 small {
-  display: inline;
-  margin-left: 14px;
-  font-size: 20px;
+  margin-left: 0;
+  font-size: 19px;
   font-weight: 400;
   letter-spacing: 0;
   color: var(--muted);
@@ -838,7 +850,7 @@ dialog::backdrop {
 }
 @media (max-width: 800px) {
   .book-heading h1 {
-    font-size: 28px;
+    font-size: 27px;
   }
   .book-heading h1 small {
     font-size: 17px;
@@ -862,9 +874,13 @@ dialog::backdrop {
   }
 }
 
-/* Keep category visible as a separate column, including compact screens. */
+/* Keep category visible as a separate column, including compact screens.
+   Desktop cells fit the longest label on one line. */
 .category-column {
-  width: 145px;
+  width: 172px;
+}
+@media (min-width: 901px) {
+  td.category-column > span { white-space: nowrap; }
 }
 td.category-column {
   color: var(--muted);
@@ -926,7 +942,7 @@ td.category-column > span {
 }
 .coverage-note p {
   margin-top: 5px;
-  text-align: right;
+  text-align: left;
 }
 .list-heading h2 small {
   display: block;
@@ -936,12 +952,14 @@ td.category-column > span {
   margin-top: 5px;
 }
 
-/* Match the inline bilingual titles without repeating source-role credits. */
-.author-hangul {
-  margin-left: 5px;
+/* Like a secondary title, a reviewed English name follows the saved Korean
+   name and wraps as a unit. The gap belongs to the preceding name, so a
+   wrapped English name starts at the left edge. */
+.author-english {
+  display: inline-block;
   font-size: 0.95em;
-  white-space: nowrap;
 }
+:has(+ .author-english) { margin-right: 3px; }
 
 [hidden] { display: none !important; }
 
@@ -950,10 +968,16 @@ td.category-column > span {
 .report-context { display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .report-context time { white-space: nowrap; }
 .report-archive-year { border-top: 1px solid var(--line); padding: 18px 0; }
-.report-archive-year h2 { font-size: 17px; font-weight: 500; letter-spacing: -.35px; margin-bottom: 8px; }
+.report-archive-year h2 { font-size: 17px; font-weight: 500; letter-spacing: -.35px; margin-bottom: 4px; }
 .report-months { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 4px 24px; list-style: none; padding: 0; }
-.report-months a { display: flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 500; text-decoration: none; text-underline-offset: 3px; }
-.report-months a:hover, .report-months a:focus-visible { color: var(--accent); text-decoration: underline; }
+.report-months a { display: flex; align-items: center; min-height: 44px; font-size: 15px; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+@media (min-width: 851px) {
+  .report-months { grid-template-columns: repeat(3, minmax(0, 200px)); }
+}
+@media (min-width: 701px) and (pointer: fine) {
+  .report-months a { min-height: 32px; }
+}
+.report-months a:hover, .report-months a:focus-visible { color: var(--accent); text-decoration-color: currentColor; }
 .report-archive .site-footer { border-top: 1px solid var(--line); }
 .site-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; }
 .site-footer a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 3px; }
@@ -1002,7 +1026,6 @@ td.category-column > span {
 .author-period-context .notice { margin: 0; }
 .author-page th, .author-page td { padding-inline: 10px; }
 .author-page th { font-size: 12px; }
-.author-page .category-column { width: 110px; }
 .author-page td.category-column { padding-top: 16px; }
 .author-page .points { width: 85px; padding-right: 10px; }
 .author-page .points strong { font-size: 16px; line-height: 1.5; }
@@ -1025,6 +1048,7 @@ td.category-column > span {
 .author-page .book-title { font-size: 16px; overflow-wrap: break-word; word-break: normal; }
 @media (max-width: 560px) {
   .author-heading h1 { font-size: 27px; }
+  .author-heading h1 small { font-size: 17px; }
   .author-page .list-heading { padding-inline: 0; align-items: flex-start; }
   .author-period-context { flex-basis: 100%; justify-content: space-between; }
   .author-page .range-label { text-align: left; }
@@ -1055,10 +1079,15 @@ td.points > strong { display: block; }
 .work-page .book-heading h1 { font-weight: 500; letter-spacing: -.7px; line-height: 1.22; }
 .work-header-points { text-align: right; font-variant-numeric: tabular-nums; }
 .work-score-label { font-size: 12px; color: var(--muted); margin-top: 8px; }
-.work-header-points > strong { display: block; font-size: 34px; font-weight: 500; line-height: 1.22; }
+.work-header-points > strong { display: block; font-size: 30px; font-weight: 500; line-height: 1.22; }
 .work-store-points { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 14px; font-size: 11px; color: var(--muted); margin-top: 9px; }
 .work-store-points span { white-space: nowrap; }
 .work-store-points b { font-weight: 400; color: #272925; margin-left: 3px; }
+/* Beside the title block, the score label and store points share the author and category baselines. */
+@media (min-width: 701px) {
+  .work-score-label { margin-top: 10px; }
+  .work-store-points { margin-top: 12px; }
+}
 .work-periods { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin: 0 0 20px; }
 .work-periods .range-label { color: var(--muted); font-size: 12px; text-align: right; margin-left: auto; }
 .work-page h2 { font-size: 17px; font-weight: 500; }
@@ -1070,7 +1099,6 @@ td.points > strong { display: block; }
 .work-page .history-readout > span::before { content: "·"; margin-inline: 8px; }
 .history-empty { font-size: 12px; color: var(--muted); margin-top: 8px; }
 .edition-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 14px 0 8px; }
-.edition-heading > span { color: var(--muted); font-size: 12px; }
 .compact-editions { list-style: none; margin: 0; padding: 0; }
 .compact-editions > li { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: baseline; padding: 6px 10px; }
 .compact-editions > li:nth-child(even) { background: var(--row-alternate); }
@@ -1085,7 +1113,10 @@ td.points > strong { display: block; }
 .work-sources > h2 { margin-bottom: 8px; }
 .work-source-details { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
 .work-source-details details { border-bottom: 1px solid var(--line); }
-.work-source-details summary { cursor: pointer; padding-block: 10px; width: fit-content; min-height: 38px; }
+.work-source-details summary { cursor: pointer; padding-block: 10px; width: fit-content; min-height: 38px; display: flex; align-items: center; gap: 7px; list-style: none; }
+.work-source-details summary::-webkit-details-marker { display: none; }
+.work-source-details summary::before { content: ""; flex: 0 0 6px; width: 6px; height: 6px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(-45deg); }
+.work-source-details details[open] > summary::before { transform: rotate(45deg); }
 .work-source-details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .work-source-details p { max-width: 76ch; font-size: 13px; line-height: 1.7; margin: 4px 0 12px; }
 .work-source-details .review-notes { border: 0; margin-bottom: 12px; }
@@ -1094,7 +1125,7 @@ td.points > strong { display: block; }
 @media (max-width: 700px) {
   .work-heading { grid-template-columns: minmax(0,1fr); gap: 18px; }
   .work-header-points { text-align: left; }
-  .work-header-points > strong { font-size: 30px; }
+  .work-header-points > strong { font-size: 27px; }
   .work-store-points { justify-content: flex-start; margin-top: 7px; }
   .compact-editions > li { padding-inline: 8px; }
   .work-source-details summary { min-height: 44px; padding-block: 14px; }
@@ -1129,7 +1160,7 @@ td.points > strong { display: block; }
 @media (max-width: 700px), (pointer: coarse) {
   .table-sort { min-height: 44px; }
   .data-provenance summary { min-height: 44px; padding-block: 12px; }
-  .empty button { min-height: 44px; padding-inline: 8px; }
+  .empty button { min-height: 44px; padding-inline: 0 8px; }
   .search { min-height: 44px; padding-block: 0; padding-right: 0; }
   .search button { flex: 0 0 44px; height: 44px; align-items: center; justify-content: center; }
   .book-back a, .author-evidence summary, .author-page .work-versions summary { display: flex; align-items: center; min-height: 44px; }
@@ -1170,7 +1201,6 @@ td.points > strong { display: block; }
 .paging-status .notice { margin: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; }
 .paging-status:empty { display: none; }
 .notice button { color: var(--accent); text-decoration: underline; flex: 0 0 auto; }
-.history-hint { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 8px 0 12px; }
 
 /* Rows without a byline keep their trigger beside the complete heading. */
 @supports (grid-template-columns: subgrid) and selector(details::details-content) {
@@ -1229,8 +1259,6 @@ td.points > strong { display: block; }
 }
 @media (max-width: 560px) {
   .book-row > .work-versions > summary { min-height: 44px; line-height: 24px; }
-  .list-heading:has(h2 small) { flex-wrap: wrap; gap: 4px; }
-  .list-heading:has(h2 small) .range-label { flex-basis: 100%; margin-left: 0; text-align: left; white-space: nowrap; }
 }
 @media (max-width: 700px), (pointer: coarse) {
   .notice button { min-width: 44px; min-height: 44px; padding-inline: 8px; }
@@ -1253,6 +1281,8 @@ td.points > strong { display: block; }
 .release-byline time { white-space: nowrap; }
 .release-date { white-space: nowrap; }
 .release-date.after-credits::before { content: " · "; }
+.release-date.after-credits.wraps { display: block; }
+.release-date.after-credits.wraps::before { content: none; }
 .release-edition-date { display: block; font-size: 12px; line-height: 1.5; margin-top: 4px; }
 @media (max-width: 700px) {
   .releases-page .list-panel { --title-inset: 6px; }
@@ -1263,18 +1293,124 @@ td.points > strong { display: block; }
 @media (pointer: coarse) {
   .list-navigation a { min-height: 44px; display: inline-flex; align-items: center; }
 }
-@media (max-width: 429px) {
-  .release-date { display: block; }
-  .release-date.after-credits::before { content: none; }
-}
 /* Keep all five targets and useful results in a short phone's first viewport. */
 @media (max-width: 360px) {
   header { row-gap: 4px; padding-block: 6px; }
   .intro { padding-block: 10px; }
   .intro > p:last-child { font-size: 12px; line-height: 1.55; }
   .filter-bar { padding-block: 8px; gap: 8px; }
-  .period-buttons { gap: 0; }
+  /* Each period keeps a centered 44px target, so the row starts at the edge. */
+  .period-buttons { gap: 0; margin-left: 0; }
   .period-buttons button, .period-buttons a { min-width: 44px; padding-inline: 2px; }
   .list-heading { padding-block: 10px; }
-  .list-panel .empty { padding: 24px 8px; }
+  .list-panel .empty { padding: 24px 0; }
 }
+
+/* Popular books and New releases: the selected tab names the list, so one
+   quiet line holds its exact dates and any coverage note. */
+.list-heading.list-context { justify-content: space-between; flex-wrap: wrap; gap: 2px 16px; padding: 11px 0 3px; }
+.list-context h2 { font-size: 13px; font-weight: 500; letter-spacing: 0; margin: 0; }
+.report-page .list-context h2 { font-size: 17px; letter-spacing: -.35px; }
+.list-heading.list-context .range-label { margin: 0; text-align: left; font-size: 12px; }
+/* Coverage sits at the right when it fits beside the dates and starts at the
+   left when it wraps. Opening it never moves the summary: the explanation
+   takes its own full-width line, or wraps under the summary as a fallback. */
+.list-context #coverage { min-width: 0; }
+.list-context #coverage:has(> .notice) { flex-basis: 100%; }
+.list-context .coverage-note { margin: 0; font-size: 12px; }
+.list-context .coverage-note summary { margin-left: 0; }
+.list-context .coverage-note p { inline-size: 0; min-inline-size: 100%; }
+@supports selector(details::details-content) {
+  .list-context #coverage, .list-context .coverage-note { display: contents; }
+  .list-context .coverage-note[open]::details-content { display: contents; }
+  .list-context .coverage-note:not([open])::details-content { display: none; }
+  .list-context #coverage > .notice { flex: 0 0 100%; }
+  .list-context .coverage-note p { flex: 0 0 100%; inline-size: auto; min-inline-size: 0; margin: 2px 0 6px; }
+}
+
+/* From 360px the help button joins the first phone header row as its mark;
+   the label remains its accessible name. Narrower headers keep a second row. */
+@media (min-width: 360px) and (max-width: 700px) {
+  header { grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 4px; row-gap: 0; }
+  .header-meta .about { grid-row: 1; grid-column: 3; justify-content: center; min-width: 44px; min-height: 44px; }
+  .header-meta .about-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .header-meta .help-mark { flex-basis: 16px; width: 16px; height: 16px; font-size: 11px; }
+}
+
+/* Category and search open from one button through 850px, where they would
+   otherwise need their own row. Wider pages keep them beside the periods. */
+.list-bar { display: flex; align-items: center; gap: 0 16px; padding-top: 20px; }
+.list-bar > .list-navigation { padding-top: 0; }
+.filter-toggle { display: none; }
+@media (min-width: 851px) {
+  .filter-bar > .filter-panel { display: contents; }
+}
+@media (max-width: 850px) {
+  .filter-toggle {
+    display: inline-flex; align-items: center; gap: 7px; position: relative;
+    margin-left: auto; min-width: 44px; min-height: 44px; padding: 0 0 0 10px;
+    border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .filter-toggle:not(:disabled):hover, .filter-toggle[aria-expanded="true"] { color: #272925; }
+  .filter-toggle svg { flex: none; }
+  .filter-active {
+    position: absolute; top: 9px; left: 21px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 2px #f3eee4;
+  }
+  .report-context { align-items: center; }
+  .filter-bar > .filter-panel {
+    grid-column: 1 / -1; display: grid; gap: 9px;
+    grid-template-columns: var(--category-control-width) minmax(0, 1fr);
+  }
+  .filter-panel:not(.open) { display: none; }
+}
+@media (min-width: 360px) and (max-width: 560px) {
+  .filter-bar > .filter-panel, .filter-bar.filter-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px; }
+}
+@media (max-width: 359px) {
+  .filter-bar > .filter-panel { grid-template-columns: minmax(0, 1fr); }
+  .filter-toggle { padding: 0; justify-content: flex-end; }
+  .filter-toggle-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .filter-active { left: auto; right: 0; }
+}
+
+/* Phone context lines share one left edge. Plain author dates need no 44px
+   line box; book-page dates sit under the period links. */
+@media (max-width: 560px) {
+  .author-period-context { row-gap: 0; }
+  .author-period-context #coverage { margin-left: 0; }
+  .author-periods .range-label { line-height: 20px; padding-top: 4px; }
+}
+@media (max-width: 700px) {
+  .work-periods .range-label { text-align: left; margin-left: 0; flex-basis: 100%; }
+}
+
+/* Author-table versions: a visible gap before the mark, and closed phone
+   controls reuse 10px of the cell's bottom padding, as list rows do. */
+.book-row > .work-versions > summary::after { content: "+"; margin-inline-start: 4px; }
+.book-row > .work-versions[open] > summary::after { content: "−"; }
+@media (max-width: 560px) {
+  .book-row > .work-versions { margin-top: 0; }
+  .book-row > .work-versions:not([open]) > summary { margin-bottom: -10px; }
+  /* The open control's 44px target already separates it from the first edition. */
+  .book-row .work-versions[open] ul { margin-top: 0; }
+  .book-row .work-versions[open] .compact-editions > li:first-child { padding-top: 0; }
+  /* Phone graph readouts stack instead of starting a line with a separator. */
+  .work-page .history-readout { display: grid; gap: 2px; }
+  .work-page .history-readout > span::before { content: none; }
+}
+
+/* Phone book and author pages: less padding around Back; combined points and
+   their label share a baseline above the store totals. */
+@media (max-width: 700px) {
+  .book-back { padding: 6px 0 2px; }
+  .work-heading { gap: 12px; }
+  .work-header-points { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 10px; }
+  .work-header-points > strong { display: inline; }
+  .work-score-label { margin: 0; }
+  .work-store-points { flex-basis: 100%; margin-top: 4px; }
+}
+
+/* The daily-points heading stays one phrase; a few pixels may use the empty
+   space beside the category heading, and the sort mark keeps its gap. */
+.releases-page th.points .sort-label { white-space: nowrap; flex: none; }
